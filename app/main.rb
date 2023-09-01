@@ -25,7 +25,7 @@ when 'cat-file'
 
   compressed = File.read(object_path)
   uncompressed = Zlib::Inflate.inflate(compressed)
-  puts 'uncompressed', uncompressed.encode('utf-8s')
+  puts 'uncompressed', uncompressed
   _, content = uncompressed.split("\0")
   print content
 
