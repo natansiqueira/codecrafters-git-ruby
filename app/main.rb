@@ -48,7 +48,7 @@ when 'hash-object'
   object_path = File.join('.git', 'objects', object_dir, object_sha)
   FileUtils.mkdir_p(File.dirname(object_path))
   File.open(object_path, 'w') { |f| f.write(object_content) }
-  print sha1
+  print object_hash
 else
   raise "Unknown command #{command}"
 end
