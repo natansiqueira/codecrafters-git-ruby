@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require 'zlib'
+require 'digest/sha1'
 
 command = ARGV[0]
 
@@ -36,7 +37,8 @@ when 'hash-object'
 
   content = File.open(filepath).read
   object = "blob #{content.size}\0#{content}"
-  puts object
+  object_hash = Digest::SHA1.hexdigest object
+  puts object_hash
 else
   raise "Unknown command #{command}"
 end
