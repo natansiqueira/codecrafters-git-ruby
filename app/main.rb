@@ -23,7 +23,7 @@ when 'cat-file'
   object_path = File.join('.git', 'objects', blob_dir, blob_sha)
   raise "Not a valid object name #{hash}" unless File.exist? object_path
 
-  compressed = File.read(path)
+  compressed = File.read(object_path)
   uncompressed = Zlib::Inflate.inflate(compressed)
   puts uncompressed
 
