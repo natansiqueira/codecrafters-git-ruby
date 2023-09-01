@@ -25,7 +25,7 @@ when 'cat-file'
 
   compressed = File.read(object_path)
   uncompressed = Zlib::Inflate.inflate(compressed)
-  puts uncompressed
+  puts uncompressed.split("\0")
 
 else
   raise "Unknown command #{command}"
