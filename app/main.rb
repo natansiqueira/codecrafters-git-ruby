@@ -2,6 +2,7 @@
 
 require 'zlib'
 require 'digest/sha1'
+require 'fileutils'
 
 command = ARGV[0]
 
@@ -14,13 +15,13 @@ when 'init'
   puts 'Initialized git directory'
 when 'cat-file'
   option = ARGV[1]
-  hash = ARGV[2]
+  object_hash = ARGV[2]
   raise 'You must provide an option. Valid option is -p' if option.nil?
   raise "Unkown option #{option}" unless option == '-p'
-  raise 'You must provide a hash' if hash.nil?
+  raise 'You must provide a hash' if object_hash.nil?
 
-  object_dir = hash[0..1]
-  object_sha = hash[2..]
+  object_dir = object_hash[0..1]
+  object_sha = object_hash[2..]
   object_path = File.join('.git', 'objects', object_dir, object_sha)
   raise "Not a valid object name #{hash}" unless File.exist? object_path
 
@@ -35,10 +36,19 @@ when 'hash-object'
   raise "Unkown option #{option}" unless option == '-w'
   raise 'You must provide a file name' if filepath.nil?
 
-  content = File.open(filepath).read
-  object = "blob #{content.size}\0#{content}"
+  file_content = File.open(filepath).read
+
+  object = "blob #{file_content.size}\0#{file_content}"
   object_hash = Digest::SHA1.hexdigest object
-  puts object_hash
+
+  object_dir = object_hash[0..1]
+  object_sha = object_hash[2..]
+
+  object_content = Zlib::Deflate.deflate object
+  object_path = File.join('.git', 'objects', object_dir, object_sha)
+  FileUtils.mkdir_p(File.dirname(object_path))
+  File.open(object_path, 'w') { |f| f.write(object_content) }
+  print sha1
 else
   raise "Unknown command #{command}"
 end
