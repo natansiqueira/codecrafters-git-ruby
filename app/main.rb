@@ -72,7 +72,7 @@ when 'ls-tree'
   tree_object.each do |object|
     file = object.split("\0")
     _, filename = file
-    puts filename if filename
+    puts filename
   end
 else
   raise "Unknown command #{command}"
