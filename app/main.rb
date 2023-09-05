@@ -69,8 +69,8 @@ when 'ls-tree'
   compressed = File.read(tree_path)
   uncompressed = Zlib::Inflate.inflate(compressed)
   tree_object = uncompressed.split("\0")
-  tree_object.each do |object|
-    file = object.scan(/[a-zA-Z]+$/)
+  tree_object.each do |tree_child|
+    file = tree_child.scan(/[a-zA-Z]+$/)
     puts file
   end
 else
