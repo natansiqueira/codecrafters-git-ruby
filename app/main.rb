@@ -54,21 +54,21 @@ when 'hash-object'
   puts object_hash
 when 'ls-tree'
   option = ARGV[1]
-  object_hash = ARGV[2]
+  tree_hash = ARGV[2]
 
   raise 'You must provide an option. Valid option is --name-only' if option.nil?
   raise "Unkown option #{option}" unless option == '--name-only'
-  raise 'You must provide a hash' if object_hash.nil?
+  raise 'You must provide a hash' if tree_hash.nil?
 
-  object_dir = object_hash[0..1]
-  object_sha = object_hash[2..]
-  object_path = File.join('.git', 'objects', object_dir, object_sha)
+  tree_dir = object_hash[0..1]
+  tree_hash = object_hash[2..]
+  tree_path = File.join('.git', 'objects', tree_dir, tre_hash)
 
-  raise "Not a valid object hash #{hash}" unless File.exist? object_path
-  compressed = File.read(object_path)
+  raise "Not a valid object hash #{tree_hash}" unless File.exist? tree_path
+  compressed = File.read(tree_path)
   uncompressed = Zlib::Inflate.inflate(compressed)
-  contents = uncompressed
-  print contents
+  tree_object = uncompressed.split("\0")
+  contents.each { |object| puts object }
 else
   raise "Unknown command #{command}"
 end
