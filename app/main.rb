@@ -60,8 +60,8 @@ when 'ls-tree'
   raise "Unkown option #{option}" unless option == '--name-only'
   raise 'You must provide a hash' if tree_hash.nil?
 
-  tree_dir = object_hash[0..1]
-  tree_hash = object_hash[2..]
+  tree_dir = tree_hash[0..1]
+  tree_hash = tree_hash[2..]
   tree_path = File.join('.git', 'objects', tree_dir, tre_hash)
 
   raise "Not a valid object hash #{tree_hash}" unless File.exist? tree_path
