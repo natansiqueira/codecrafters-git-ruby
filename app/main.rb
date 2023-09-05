@@ -70,7 +70,7 @@ when 'ls-tree'
   uncompressed = Zlib::Inflate.inflate(compressed)
   tree_object = uncompressed.split("\0")
   tree_object.each do |object|
-    file = object.split("\0").last
+    file = object.scan(/\w+$/)
     puts file
   end
 else
