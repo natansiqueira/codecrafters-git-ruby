@@ -71,7 +71,8 @@ when 'ls-tree'
   tree_object = uncompressed.split("\0")
   tree_object.each do |object|
     file = object.split("\0")
-    puts "file #{file}"
+    _, filename = file.split("\0")
+    puts filename
   end
 else
   raise "Unknown command #{command}"
