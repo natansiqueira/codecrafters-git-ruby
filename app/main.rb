@@ -65,10 +65,14 @@ when 'ls-tree'
   tree_path = File.join('.git', 'objects', tree_dir, tree_hash)
 
   raise "Not a valid object hash #{tree_hash}" unless File.exist? tree_path
+
   compressed = File.read(tree_path)
   uncompressed = Zlib::Inflate.inflate(compressed)
   tree_object = uncompressed.split("\0")
-  tree_object.each { |object| puts object.split('\0').first }
+  tree_object.each do |object|
+    mode, file = object.split("\0")
+    puts "mode #{mode} file #{file}"
+  end
 else
   raise "Unknown command #{command}"
 end
