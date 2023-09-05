@@ -62,7 +62,7 @@ when 'ls-tree'
 
   tree_dir = tree_hash[0..1]
   tree_hash = tree_hash[2..]
-  tree_path = File.join('.git', 'objects', tree_dir, tre_hash)
+  tree_path = File.join('.git', 'objects', tree_dir, tree_hash)
 
   raise "Not a valid object hash #{tree_hash}" unless File.exist? tree_path
   compressed = File.read(tree_path)
