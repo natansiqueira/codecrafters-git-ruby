@@ -70,8 +70,8 @@ when 'ls-tree'
   uncompressed = Zlib::Inflate.inflate(compressed)
   tree_object = uncompressed.split("\0")
   tree_object.each do |object|
-    mode, file = object.split("\0")
-    puts "mode #{mode} file #{file}"
+    file = object.split("\0")
+    puts "file #{file}"
   end
 else
   raise "Unknown command #{command}"
