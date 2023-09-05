@@ -68,7 +68,7 @@ when 'ls-tree'
   compressed = File.read(tree_path)
   uncompressed = Zlib::Inflate.inflate(compressed)
   tree_object = uncompressed.split("\0")
-  tree_object.each { |object| puts object }
+  tree_object.each { |object| puts object.split('\W') }
 else
   raise "Unknown command #{command}"
 end
