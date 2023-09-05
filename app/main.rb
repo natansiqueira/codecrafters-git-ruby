@@ -67,8 +67,8 @@ when 'ls-tree'
   raise "Not a valid object hash #{hash}" unless File.exist? object_path
   compressed = File.read(object_path)
   uncompressed = Zlib::Inflate.inflate(compressed)
-  _, content = uncompressed.split("\0")
-  print content
+  contents = uncompressed.split("\0")
+  print contents
 else
   raise "Unknown command #{command}"
 end
