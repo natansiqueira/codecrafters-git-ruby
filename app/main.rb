@@ -26,11 +26,18 @@ def write_tree(base_path)
     file_path = File.join(base_path, file)
     hash = File.directory?(file) ? write_tree(file_path) : hash_object(file_path)
     mode = sprintf("%o", File.stat(file_path).mode)  
-    tree_content =  + "#{mode} #{file}\0#{hash}"
+    tree_content =  tree_content + "#{mode} #{file}\0#{hash}"
   end
 
   object = "tree #{tree_content.length}\0#{tree_content}"
-  puts object
+  object_content = Zlib::Deflate.deflate object
+  object_hash = Digest::SHA1.hexdigest object
+  object_dir = object_hash[0..1]
+  object_sha = object_hash[2..]
+  object_path = File.join('.git', 'objects', object_dir, object_sha)
+  FileUtils.mkdir_p(File.dirname(object_path))
+  File.open(object_path, 'w') { |f| f.write(object_content) }
+  object_hash
 end
 
 command = ARGV[0]
