@@ -73,6 +73,8 @@ when 'ls-tree'
     file = tree_child.scan(/[a-zA-Z]+$/)
     puts file
   end
+when 'write-tree'
+  puts 'write-tree'
 else
   raise "Unknown command #{command}"
 end
