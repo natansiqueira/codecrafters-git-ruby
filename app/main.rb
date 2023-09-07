@@ -25,9 +25,9 @@ def write_tree(path)
              .reject { |file| file.start_with?('.') }
 
   files = files.map do |file|
-    object_hash = hash_object file unless 
+    object_hash = hash_object file unless File.directory? file
     file_mode = format('%o', File.stat(file).mode)
-    "#{file_mode} #{file}\0 #{object_hash}"
+    puts "#{file_mode} #{file}\0 #{object_hash}"
   end
 
   '7068870da0ede81a38725f0a737f1dc7f807ca25'
