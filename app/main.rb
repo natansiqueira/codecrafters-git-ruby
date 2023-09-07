@@ -84,7 +84,7 @@ when 'write-tree'
 
   files = files.map do |file|
     object_hash = hash_object file  unless File.directory? file
-    file_mode = File.stat(file).mode
+    file_mode = sprintf("%o", File.stat(file).mode)
     "#{file_mode} #{file}\0 #{object_hash}"
   end
 
