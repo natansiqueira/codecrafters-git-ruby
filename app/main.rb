@@ -30,14 +30,7 @@ def write_tree(base_path)
   end
 
   object = "tree #{tree_content.length}\0#{tree_content}"
-  object_content = Zlib::Deflate.deflate object
-  object_hash = Digest::SHA1.hexdigest object
-  object_dir = object_hash[0..1]
-  object_sha = object_hash[2..]
-  object_path = File.join('.git', 'objects', object_dir, object_sha)
-  FileUtils.mkdir_p(File.dirname(object_path))
-  File.open(object_path, 'w') { |f| f.write(object_content) }
-  object_hash
+  puts object
 end
 
 command = ARGV[0]
