@@ -55,7 +55,7 @@ when 'hash-object'
   raise "Unkown option #{option}" unless option == '-w'
   raise 'You must provide a file name' if file_path.nil?
 
-  object_hash = hash_object(file_path, 'blob')
+  object_hash = hash_object(file_path)
   puts object_hash
 when 'ls-tree'
   option = ARGV[1]
@@ -83,7 +83,7 @@ when 'write-tree'
     .select { |file| !file.start_with?('.') }
 
   files.map do |file|
-    object_hash = hash_object(file) unless File.directory? file
+    object_hash = hash_object file  unless File.directory? file
     file_mode = File.stat(file).mode
     "#{file_mode} #{file}\0 #{object_hash}"
   end
