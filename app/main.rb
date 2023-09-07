@@ -96,7 +96,7 @@ when 'ls-tree'
   tree_object = uncompressed.split("\0")
   tree_object.each do |tree_child|
     file = tree_child.scan(/ [a-zA-Z]+$/)
-    puts file.class
+    puts file[0]
   end
 when 'write-tree'
   object_hash = write_tree '.'
