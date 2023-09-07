@@ -24,13 +24,15 @@ def write_tree(path)
   files = Dir.children('.')
              .reject { |file| file.start_with?('.') }
 
-  files = files.map do |file|
-    object_hash = hash_object file unless File.directory? file
+  tree_content = ''
+
+  files.each_with_object(tree_content) do |file|
+    object_hash = File.directory? file ? write_tree file : hash_object file 
     file_mode = format('%o', File.stat(file).mode)
-    puts "#{file_mode} #{file}\0 #{object_hash}"
+    tree_content << "#{file_mode} #{file}\0 #{object_hash}\n"
   end
 
-  '7068870da0ede81a38725f0a737f1dc7f807ca25'
+  puts tree_content
 end
 
 command = ARGV[0]
