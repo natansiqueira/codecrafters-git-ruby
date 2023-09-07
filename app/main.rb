@@ -77,6 +77,8 @@ when 'write-tree'
   contents = Dir.children('.')
     .select { |content| !content.start_with?('.') }
 
+  puts contents
+
   '4aab5f560862b45d7a9f1370b1c163b74484a24d'
 else
   raise "Unknown command #{command}"
