@@ -6,7 +6,6 @@ require 'fileutils'
 
 def hash_object(file_path)
   file_content = File.open(file_path).read
-
   object = "blob #{file_content.size}\0#{file_content}"
   object_hash = Digest::SHA1.hexdigest object
 
@@ -20,23 +19,20 @@ def hash_object(file_path)
   object_hash
 end
 
-def write_tree(path)
-  files = Dir.children(path)
-             .reject { |file| file.start_with?('.') }
+def write_tree(base_path)
+  tree_content = ""
 
-  tree_content = ''
-
-  files.each_with_object(tree_content) do |file|
-    object_hash = File.directory? file ? 'dir' : hash_object(file) 
-    file_mode = format('%o', File.stat(file).mode)
-    tree_content = tree_content + "#{file_mode} #{file}\0#{object_hash}"
+  Dir.glob('*', base: base_path).each_with_object(tree_content) do |file|
+    file_path = File.join(base_path, file)
+    hash = File.directory?(file) ? write_tree(file_path) : hash_object(file_path)
+    mode = sprintf("%o", File.stat(file_path).mode)  
+    tree_content =  + "#{mode} #{file}\0#{hash}"
   end
 
   object = "tree #{tree_content.length}\0#{tree_content}"
   object_hash = Digest::SHA1.hexdigest object
   object_dir = object_hash[0..1]
   object_sha = object_hash[2..]
-
   object_content = Zlib::Deflate.deflate object
   object_path = File.join('.git', 'objects', object_dir, object_sha)
   FileUtils.mkdir_p(File.dirname(object_path))
@@ -98,10 +94,6 @@ when 'ls-tree'
   compressed = File.read(tree_path)
   uncompressed = Zlib::Inflate.inflate(compressed)
   tree_object = uncompressed.split("\0")
-  tree_object.each do |tree_child|
-    file = tree_child.scan(/[a-zA-Z]{2,}$/)
-    puts file
-  end
 when 'write-tree'
   object_hash = write_tree '.'
   puts object_hash
