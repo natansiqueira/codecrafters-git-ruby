@@ -30,7 +30,6 @@ def write_tree(base_path)
   end
 
   object = "tree #{tree_content.length}\0#{tree_content}"
-  puts object
   object_content = Zlib::Deflate.deflate object
   object_hash = Digest::SHA1.hexdigest object
   object_dir = object_hash[0..1]
