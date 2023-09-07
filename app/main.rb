@@ -97,6 +97,7 @@ when 'ls-tree'
   tree_object.each do |tree_child|
     file = tree_child.split('\0')
     puts file
+    puts
   end
 when 'write-tree'
   object_hash = write_tree '.'
