@@ -74,7 +74,7 @@ when 'ls-tree'
     puts file
   end
 when 'write-tree'
-  puts Dir.glob('*', base: '.' )
+  puts Dir.children('.')
 
   '4aab5f560862b45d7a9f1370b1c163b74484a24d'
 else
