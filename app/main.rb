@@ -4,10 +4,10 @@ require 'zlib'
 require 'digest/sha1'
 require 'fileutils'
 
-def hash_object(file_path, object_type)
-  file_content = File.open(file_path).read unless object_type == 'tree'
+def hash_object(file_path)
+  file_content = File.open(file_path).read
 
-  object = "#{object_type} #{file_content.size}\0#{file_content}"
+  object = "blob #{file_content.size}\0#{file_content}"
   object_hash = Digest::SHA1.hexdigest object
 
   object_dir = object_hash[0..1]
@@ -83,12 +83,10 @@ when 'write-tree'
     .select { |file| !file.start_with?('.') }
 
   files.map do |file|
+    object_hash = hash_object(file) unless File.directory? file
     file_mode = File.stat(file).mode
-    object_hash = hash_object(file, 'blob')
     "#{file_mode} #{file}\0 #{object_hash}"
   end
-
-  puts files
 else
   raise "Unknown command #{command}"
 end
