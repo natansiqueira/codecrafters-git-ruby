@@ -27,14 +27,13 @@ def write_tree(path)
   tree_content = ''
 
   files.each_with_object(tree_content) do |file|
-    object_hash = File.directory? file ? '-' : hash_object(file) 
+    object_hash = File.directory? file ? 'dir' : hash_object(file) 
     file_mode = format('%o', File.stat(file).mode)
     tree_content = tree_content + "#{file_mode} #{file}\0 #{object_hash}"
   end
 
   object = "tree #{tree_content.length}\0#{tree_content}"
   object_hash = Digest::SHA1.hexdigest object
-  puts object
   object_dir = object_hash[0..1]
   object_sha = object_hash[2..]
 
