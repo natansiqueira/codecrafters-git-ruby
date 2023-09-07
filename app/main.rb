@@ -29,13 +29,12 @@ def write_tree(base_path)
     tree_content =  + "#{mode} #{file}\0#{hash}"
   end
 
-  puts tree_content
-
   object = "tree #{tree_content.length}\0#{tree_content}"
+  puts object
+  object_content = Zlib::Deflate.deflate object
   object_hash = Digest::SHA1.hexdigest object
   object_dir = object_hash[0..1]
   object_sha = object_hash[2..]
-  object_content = Zlib::Deflate.deflate object
   object_path = File.join('.git', 'objects', object_dir, object_sha)
   FileUtils.mkdir_p(File.dirname(object_path))
   File.open(object_path, 'w') { |f| f.write(object_content) }
