@@ -32,7 +32,17 @@ def write_tree(path)
     tree_content = tree_content + "#{file_mode} #{file}\0 #{object_hash}\n"
   end
 
-  puts tree_content
+  object = "tree #{tree_content.size}\0\n#{tree_content}"
+  object_hash = Digest::SHA1.hexdigest object
+
+  object_dir = object_hash[0..1]
+  object_sha = object_hash[2..]
+
+  object_content = Zlib::Deflate.deflate object
+  object_path = File.join('.git', 'objects', object_dir, object_sha)
+  FileUtils.mkdir_p(File.dirname(object_path))
+  File.open(object_path, 'w') { |f| f.write(object_content) }
+  object_hash
 end
 
 command = ARGV[0]
@@ -95,6 +105,7 @@ when 'ls-tree'
   end
 when 'write-tree'
   object_hash = write_tree '.'
+  object_hash
 else
   raise "Unknown command #{command}"
 end
