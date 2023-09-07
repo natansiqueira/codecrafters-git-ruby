@@ -21,7 +21,7 @@ def hash_object(file_path)
 end
 
 def write_tree(path)
-  files = Dir.children('.')
+  files = Dir.children(path)
              .reject { |file| file.start_with?('.') }
 
   tree_content = ''
