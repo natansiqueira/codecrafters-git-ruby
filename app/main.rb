@@ -74,10 +74,8 @@ when 'ls-tree'
     puts file
   end
 when 'write-tree'
-  puts Dir.new('.')
-    .children
-    .filter{ |child| !child.start_with?('.') }
-    
+  puts Dir.glob('*')
+
   '4aab5f560862b45d7a9f1370b1c163b74484a24d'
 else
   raise "Unknown command #{command}"
