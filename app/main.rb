@@ -34,7 +34,7 @@ def write_tree(path)
 
   object = "tree #{tree_content.size}\0#{tree_content}"
   object_hash = Digest::SHA1.hexdigest object
-
+  puts object
   object_dir = object_hash[0..1]
   object_sha = object_hash[2..]
 
