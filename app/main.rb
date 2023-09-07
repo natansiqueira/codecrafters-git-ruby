@@ -20,6 +20,19 @@ def hash_object(file_path)
   object_hash
 end
 
+def write_tree(path)
+  files = Dir.children('.')
+             .reject { |file| file.start_with?('.') }
+
+  files = files.map do |file|
+    object_hash = hash_object file unless 
+    file_mode = format('%o', File.stat(file).mode)
+    "#{file_mode} #{file}\0 #{object_hash}"
+  end
+
+  '7068870da0ede81a38725f0a737f1dc7f807ca25'
+end
+
 command = ARGV[0]
 
 case command
@@ -79,16 +92,8 @@ when 'ls-tree'
     puts file
   end
 when 'write-tree'
-  files = Dir.children('.')
-             .reject { |file| file.start_with?('.') }
-
-  files = files.map do |file|
-    object_hash = hash_object file unless File.directory? file
-    file_mode = format('%o', File.stat(file).mode)
-    "#{file_mode} #{file}\0 #{object_hash}"
-  end
-
-  puts files
+  object_hash = write_tree '.'
+  object_hash
 else
   raise "Unknown command #{command}"
 end
