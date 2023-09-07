@@ -95,8 +95,8 @@ when 'ls-tree'
   uncompressed = Zlib::Inflate.inflate(compressed)
   tree_object = uncompressed.split("\0")
   tree_object.each do |tree_child|
-    file = tree_child.scan(/[a-zA-Z]+\n$/)
-    puts file.first
+    file = tree_child.split('\n')
+    puts file
   end
 when 'write-tree'
   object_hash = write_tree '.'
