@@ -82,11 +82,13 @@ when 'write-tree'
   files = Dir.children('.')
     .select { |file| !file.start_with?('.') }
 
-  files.map do |file|
+  files = files.map do |file|
     object_hash = hash_object file  unless File.directory? file
     file_mode = File.stat(file).mode
     "#{file_mode} #{file}\0 #{object_hash}"
   end
+
+  puts files
 else
   raise "Unknown command #{command}"
 end
