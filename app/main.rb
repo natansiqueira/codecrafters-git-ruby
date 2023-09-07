@@ -4,6 +4,22 @@ require 'zlib'
 require 'digest/sha1'
 require 'fileutils'
 
+def hash_object(file_path, object_type)
+  file_content = File.open(file_path).read
+
+  object = "#{object_type} #{file_content.size}\0#{file_content}"
+  object_hash = Digest::SHA1.hexdigest object
+
+  object_dir = object_hash[0..1]
+  object_sha = object_hash[2..]
+
+  object_content = Zlib::Deflate.deflate object
+  object_path = File.join('.git', 'objects', object_dir, object_sha)
+  FileUtils.mkdir_p(File.dirname(object_path))
+  File.open(object_path, 'w') { |f| f.write(object_content) }
+  object_hash
+end
+
 command = ARGV[0]
 
 case command
@@ -33,24 +49,13 @@ when 'cat-file'
   print content
 when 'hash-object'
   option = ARGV[1]
-  filepath = ARGV[2]
+  file_path = ARGV[2]
 
   raise 'You must provide an option. Valid option is -w' if option.nil?
   raise "Unkown option #{option}" unless option == '-w'
   raise 'You must provide a file name' if filepath.nil?
 
-  file_content = File.open(filepath).read
-
-  object = "blob #{file_content.size}\0#{file_content}"
-  object_hash = Digest::SHA1.hexdigest object
-
-  object_dir = object_hash[0..1]
-  object_sha = object_hash[2..]
-
-  object_content = Zlib::Deflate.deflate object
-  object_path = File.join('.git', 'objects', object_dir, object_sha)
-  FileUtils.mkdir_p(File.dirname(object_path))
-  File.open(object_path, 'w') { |f| f.write(object_content) }
+  object_hash = hash_object(file_path, 'blob')
   puts object_hash
 when 'ls-tree'
   option = ARGV[1]
@@ -74,12 +79,16 @@ when 'ls-tree'
     puts file
   end
 when 'write-tree'
-  contents = Dir.children('.')
-    .select { |content| !content.start_with?('.') }
+  files = Dir.children('.')
+    .select { |file| !file.start_with?('.') }
 
-  puts contents
+  files.map do |file|
+    file_mode = File.stat(file).mode
+    object_hash = hash_object(file, 'blob')
+    "#{file_mode} #{file}\0 #{object_hash}"
+  end
 
-  '4aab5f560862b45d7a9f1370b1c163b74484a24d'
+  puts files
 else
   raise "Unknown command #{command}"
 end
