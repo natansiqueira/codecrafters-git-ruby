@@ -93,7 +93,7 @@ when 'ls-tree'
   end
 when 'write-tree'
   object_hash = write_tree '.'
-  object_hash
+  puts object_hash
 else
   raise "Unknown command #{command}"
 end
