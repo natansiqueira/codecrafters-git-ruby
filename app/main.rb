@@ -27,7 +27,7 @@ def write_tree(path)
   tree_content = ''
 
   files.each_with_object(tree_content) do |file|
-    object_hash = File.directory?(file) ? write_tree(file) : hash_object(file) 
+    object_hash = hash_object file unless File.directory? file 
     file_mode = format('%o', File.stat(file).mode)
     tree_content << "#{file_mode} #{file}\0 #{object_hash}\n"
   end
