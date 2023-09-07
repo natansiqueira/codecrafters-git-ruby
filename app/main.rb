@@ -5,7 +5,7 @@ require 'digest/sha1'
 require 'fileutils'
 
 def hash_object(file_path, object_type)
-  file_content = File.open(file_path).read
+  file_content = File.open(file_path).read unless object_type == 'tree'
 
   object = "#{object_type} #{file_content.size}\0#{file_content}"
   object_hash = Digest::SHA1.hexdigest object
