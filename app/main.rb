@@ -80,11 +80,11 @@ when 'ls-tree'
   end
 when 'write-tree'
   files = Dir.children('.')
-    .select { |file| !file.start_with?('.') }
+             .reject { |file| file.start_with?('.') }
 
   files = files.map do |file|
-    object_hash = hash_object file  unless File.directory? file
-    file_mode = sprintf("%o", File.stat(file).mode)
+    object_hash = hash_object file unless File.directory? file
+    file_mode = format('%o', File.stat(file).mode)
     "#{file_mode} #{file}\0 #{object_hash}"
   end
 
