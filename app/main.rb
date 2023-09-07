@@ -53,7 +53,7 @@ when 'hash-object'
 
   raise 'You must provide an option. Valid option is -w' if option.nil?
   raise "Unkown option #{option}" unless option == '-w'
-  raise 'You must provide a file name' if filepath.nil?
+  raise 'You must provide a file name' if file_path.nil?
 
   object_hash = hash_object(file_path, 'blob')
   puts object_hash
