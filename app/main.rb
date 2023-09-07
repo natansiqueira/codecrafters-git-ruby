@@ -32,7 +32,9 @@ def write_tree(path)
     tree_content = tree_content + "#{file_mode} #{file}\0 #{object_hash}"
   end
 
-  object = "tree 123\0#{tree_content}"
+  object = "tree #{tree_content.length}\0#{tree_content}"
+  puts tree_content
+  puts 'length', tree_content.length
   object_hash = Digest::SHA1.hexdigest object
   object_dir = object_hash[0..1]
   object_sha = object_hash[2..]
