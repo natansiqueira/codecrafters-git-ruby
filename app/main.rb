@@ -1,12 +1,10 @@
-# frozen_string_literal: true
 
 require 'zlib'
 require 'digest/sha1'
 require 'fileutils'
 
-def hash_object(file_path)
-  file_content = File.open(file_path).read
-  object = "blob #{file_content.size}\0#{file_content}"
+def hash_object(content, type)
+  object = "#{type} #{content.length}\0#{content}"
   object_hash = Digest::SHA1.hexdigest object
 
   object_dir = object_hash[0..1]
@@ -19,25 +17,29 @@ def hash_object(file_path)
   object_hash
 end
 
-def write_tree(base_path)
-  tree_content = ""
+def write_tree(path)
+  tree_objects = ""
+  children = Dir.children(path).sort
 
-  Dir.glob('*', base: base_path).each_with_object(tree_content) do |file|
-    file_path = File.join(base_path, file)
-    hash = File.directory?(file) ? write_tree(file_path) : hash_object(file_path)
-    mode = sprintf("%o", File.stat(file_path).mode)  
-    tree_content =  tree_content + "#{mode} #{file}\0#{hash}"
+  children.each do |child|
+    next if child == '.git'
+    hash = ""
+    mode = 0
+
+    if File.directory? child
+      hash = [write_tree(File.join(path, child))].pack("H*")
+      mode = 40000
+    else
+      content = File.open(File.join(path, child)).read
+      hash = [hash_object(content, 'blob')].pack("H*")
+      mode = 100644
+    end
+
+    tree_objects << "#{mode} #{child}\0#{hash}"
   end
 
-  object = "tree #{tree_content.length}\0#{tree_content}"
-  object_content = Zlib::Deflate.deflate object
-  object_hash = Digest::SHA1.hexdigest object
-  object_dir = object_hash[0..1]
-  object_sha = object_hash[2..]
-  object_path = File.join('.git', 'objects', object_dir, object_sha)
-  FileUtils.mkdir_p(File.dirname(object_path))
-  File.open(object_path, 'w') { |f| f.write(object_content) }
-  object_hash
+  hash = hash_object(tree_objects, 'tree')
+  hash
 end
 
 command = ARGV[0]
@@ -65,18 +67,18 @@ when 'cat-file'
 
   compressed = File.read(object_path)
   uncompressed = Zlib::Inflate.inflate(compressed)
-  _, content = uncompressed.split("\0")
-  print content
+  print uncompressed
 when 'hash-object'
   option = ARGV[1]
-  file_path = ARGV[2]
+  path = ARGV[2]
 
   raise 'You must provide an option. Valid option is -w' if option.nil?
   raise "Unkown option #{option}" unless option == '-w'
-  raise 'You must provide a file name' if file_path.nil?
+  raise 'You must provide a file name' if path.nil?
 
-  object_hash = hash_object(file_path)
-  puts object_hash
+  content = File.open(path).read
+  hash = hash_object(content, 'blob')
+  puts hash
 when 'ls-tree'
   option = ARGV[1]
   tree_hash = ARGV[2]
@@ -98,8 +100,8 @@ when 'ls-tree'
     puts tree_child.scan(/\d+ ([a-zA-Z.]+)$/)
   end
 when 'write-tree'
-  object_hash = write_tree '.'
-  puts object_hash
+  hash = write_tree('.')
+  puts hash
 else
   raise "Unknown command #{command}"
 end
