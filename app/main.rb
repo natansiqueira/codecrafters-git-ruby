@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 
 require 'zlib'
 require 'digest/sha1'
@@ -18,7 +19,7 @@ def hash_object(content, type)
 end
 
 def write_tree(path)
-  tree_objects = ''
+  tree_objects = []
   children = Dir.children(path).sort
 
   children.each do |child|
@@ -39,7 +40,7 @@ def write_tree(path)
     tree_objects << "#{mode} #{child}\0#{hash}"
   end
 
-  hash_object(tree_objects, 'tree')
+  hash_object(tree_objects.join(''), 'tree')
 end
 
 command = ARGV[0]
