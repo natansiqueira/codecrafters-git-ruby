@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 
 require 'zlib'
 require 'digest/sha1'
@@ -18,28 +19,28 @@ def hash_object(content, type)
 end
 
 def write_tree(path)
-  tree_objects = ""
+  tree_objects = ''
   children = Dir.children(path).sort
 
   children.each do |child|
     next if child == '.git'
-    hash = ""
+
+    hash = ''
     mode = 0
 
     if File.directory? child
-      hash = [write_tree(File.join(path, child))].pack("H*")
-      mode = 40000
+      hash = [write_tree(File.join(path, child))].pack('H*')
+      mode = 40_000
     else
       content = File.open(File.join(path, child)).read
-      hash = [hash_object(content, 'blob')].pack("H*")
-      mode = 100644
+      hash = [hash_object(content, 'blob')].pack('H*')
+      mode = 100_644
     end
 
     tree_objects << "#{mode} #{child}\0#{hash}"
   end
 
-  hash = hash_object(tree_objects, 'tree')
-  hash
+  hash_object(tree_objects, 'tree')
 end
 
 command = ARGV[0]
@@ -68,7 +69,7 @@ when 'cat-file'
   compressed = File.read(object_path)
   uncompressed = Zlib::Inflate.inflate(compressed)
   _, content = uncompressed.split("\0")
-  print content
+  puts content
 when 'hash-object'
   option = ARGV[1]
   path = ARGV[2]
