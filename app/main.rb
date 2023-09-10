@@ -20,15 +20,15 @@ end
 
 def write_tree(path)
   tree_objects = []
-  children = Dir.children(path).sort
-  children.each do |child|
+  Dir.children(path)
+     .each do |child|
     next if child == '.git'
 
     child_path = File.join(path, child)
     directory = File.directory? child
     content = File.read(child_path) unless directory
     hash = directory ? [write_tree(child_path)].pack('H*') : [hash_object(content, 'blob')].pack('H*')
-    mode = directory ? 100644 : 40000 
+    mode = directory ? 100_644 : 40_000
     tree_objects << "#{mode} #{child}\0#{hash}"
   end
   hash_object(tree_objects.join, 'tree')
