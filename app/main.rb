@@ -69,7 +69,7 @@ when 'cat-file'
   compressed = File.read(object_path)
   uncompressed = Zlib::Inflate.inflate(compressed)
   _, content = uncompressed.split("\0")
-  puts content
+  print content
 when 'hash-object'
   option = ARGV[1]
   path = ARGV[2]
