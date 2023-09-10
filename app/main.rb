@@ -14,33 +14,24 @@ def hash_object(content, type)
   object_content = Zlib::Deflate.deflate object
   object_path = File.join('.git', 'objects', object_dir, object_sha)
   FileUtils.mkdir_p(File.dirname(object_path))
-  File.open(object_path, 'w') { |f| f.write(object_content) }
+  File.write(object_path, object_content)
   object_hash
 end
 
 def write_tree(path)
   tree_objects = []
   children = Dir.children(path).sort
-
   children.each do |child|
     next if child == '.git'
 
-    hash = ''
-    mode = 0
-
-    if File.directory? child
-      hash = [write_tree(File.join(path, child))].pack('H*')
-      mode = 40_000
-    else
-      content = File.open(File.join(path, child)).read
-      hash = [hash_object(content, 'blob')].pack('H*')
-      mode = 100_644
-    end
-
+    child_path = File.join(path, child)
+    directory = File.directory? child
+    content = File.read(child_path) unless directory
+    hash = directory ? [write_tree(child_path)].pack('H*') : [hash_object(content, 'blob')].pack('H*')
+    mode = directory ? 100644 : 40000 
     tree_objects << "#{mode} #{child}\0#{hash}"
   end
-
-  hash_object(tree_objects.join(''), 'tree')
+  hash_object(tree_objects.join, 'tree')
 end
 
 command = ARGV[0]
@@ -78,7 +69,7 @@ when 'hash-object'
   raise "Unkown option #{option}" unless option == '-w'
   raise 'You must provide a file name' if path.nil?
 
-  content = File.open(path).read
+  content = File.read(path)
   hash = hash_object(content, 'blob')
   puts hash
 when 'ls-tree'
@@ -102,8 +93,7 @@ when 'ls-tree'
     puts tree_child.scan(/\d+ ([a-zA-Z.]+)$/)
   end
 when 'write-tree'
-  hash = write_tree('.')
-  puts hash
+  puts write_tree('.')
 else
   raise "Unknown command #{command}"
 end
