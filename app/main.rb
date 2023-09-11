@@ -105,7 +105,7 @@ when 'commit-tree'
   commit_hash = ARGV[3]
   message = ARGV[5]
 
-  content = <<~COMMIT.strip
+  content = <<~COMMIT
     tree #{tree_hash}
     parent #{commit_hash}
     author Natan Siqueira<natanounatan@gmail.com> #{Time.now}
