@@ -31,7 +31,7 @@ def write_tree(path)
       hash = [write_tree(child)].pack('H*')
       mode = 40000
     else
-      content = File.open(child).read
+      content = File.open(File.join(path, child)).read
       hash = [hash_object(content, 'blob')].pack('H*')
       mode = 100644
     end
