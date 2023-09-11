@@ -93,7 +93,7 @@ when 'ls-tree'
     puts tree_child.scan(/\d+ ([a-zA-Z.]+)$/)
   end
 when 'write-tree'
-  puts write_tree('.')
+  write_tree('.')
 when 'commit-tree'
   tree_hash = ARGV[1]
   commit_hash = ARGV[3]
