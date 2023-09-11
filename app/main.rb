@@ -20,7 +20,8 @@ end
 
 def write_tree(path)
   tree_objects = []
-  Dir.children(path).sort
+  Dir.children(path)
+     .sort
      .each do |child|
     next if child == '.git'
 
@@ -107,8 +108,6 @@ when 'commit-tree'
 
     #{message}
   COMMIT
-
-  puts content
 
   hash_object(content, 'commit')
 else
