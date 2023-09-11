@@ -28,7 +28,7 @@ def write_tree(path)
     child_path = File.join(path, child)
     directory = File.directory? child
     content = File.read(child_path) unless directory
-    hash = directory ? [write_tree(child_path)].pack('H*') : [hash_object(content, 'blob')].pack('H*')
+    hash = directory ? [write_tree(child)].pack('H*') : [hash_object(content, 'blob')].pack('H*')
     mode = directory ? 100_644 : 40_000
     tree_objects << "#{mode} #{child}\0#{hash}"
   end
