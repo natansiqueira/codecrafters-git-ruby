@@ -21,6 +21,7 @@ end
 def write_tree(path)
   tree_objects = []
   children = Dir.children(path).sort
+
   children.each do |child|
     next if child == '.git'
 
@@ -31,7 +32,7 @@ def write_tree(path)
     mode = directory ? 100_644 : 40_000
     tree_objects << "#{mode} #{child}\0#{hash}"
   end
-  hash_object(tree_objects.join, 'tree')
+  hash_object(tree_objects.join(''), 'tree')
 end
 
 command = ARGV[0]
@@ -93,7 +94,7 @@ when 'ls-tree'
     puts tree_child.scan(/\d+ ([a-zA-Z.]+)$/)
   end
 when 'write-tree'
-  print write_tree('.')
+  puts write_tree('.')
 when 'commit-tree'
   tree_hash = ARGV[1]
   commit_hash = ARGV[3]
