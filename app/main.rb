@@ -32,7 +32,7 @@ def write_tree(path)
     mode = directory ? 100_644 : 40_000
     tree_objects << "#{mode} #{child}\0#{hash}"
   end
-  hash_object(tree_objects.join(''), 'tree')
+  hash_object(tree_objects.join(""), 'tree')
 end
 
 command = ARGV[0]
