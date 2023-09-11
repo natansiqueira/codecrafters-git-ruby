@@ -20,9 +20,8 @@ end
 
 def write_tree(path)
   tree_objects = []
-  Dir.children(path)
-     .sort
-     .each do |child|
+  children = Dir.children(path).sort
+  children.each do |child|
     next if child == '.git'
 
     child_path = File.join(path, child)
