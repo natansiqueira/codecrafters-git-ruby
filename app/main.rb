@@ -110,8 +110,7 @@ when 'commit-tree'
 
   puts content
 
-  hash = hash_object(content, 'commit')
-  puts hash
+  hash_object(content, 'commit')
 else
   raise "Unknown command #{command}"
 end
