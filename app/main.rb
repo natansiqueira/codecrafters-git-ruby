@@ -3,6 +3,7 @@
 require 'zlib'
 require 'digest/sha1'
 require 'fileutils'
+require 'time'
 
 def hash_object(content, type)
   object = "#{type} #{content.length}\0#{content}"
@@ -107,8 +108,8 @@ when 'commit-tree'
   content = <<~COMMIT.strip
     tree #{tree_hash}
     parent #{commit_hash}
-    author Natan Siqueira<natanounatan@gmail.com> #{time.now}
-    commiter Natan Siqueira<natanounatan@gmail.com> #{time.now}
+    author Natan Siqueira<natanounatan@gmail.com> #{Time.now}
+    commiter Natan Siqueira<natanounatan@gmail.com> #{Time.now}
 
     #{message}
   COMMIT
