@@ -114,7 +114,7 @@ when 'commit-tree'
     #{message}
   COMMIT
 
-  hash_object(content, 'commit')
+  puts hash_object(content, 'commit')
 else
   raise "Unknown command #{command}"
 end
