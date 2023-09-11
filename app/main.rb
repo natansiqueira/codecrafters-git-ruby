@@ -28,7 +28,7 @@ def write_tree(path)
     hash = ''
     mode = 0
     if File.directory? child
-      hash = [write_tree(File.join(path, child))].pack('H*')
+      hash = [write_tree(child)].pack('H*')
       mode = 40000
     else
       content = File.open(File.join(path, child)).read
