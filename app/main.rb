@@ -20,7 +20,7 @@ end
 
 def write_tree(path)
   tree_objects = []
-  Dir.children(path)
+  Dir.children(path).sort
      .each do |child|
     next if child == '.git'
 
