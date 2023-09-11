@@ -104,9 +104,11 @@ when 'commit-tree'
     parent #{commit_hash}
     author Natan Siqueira<natanounatan@gmail.com> #{time.now}
     commiter Natan Siqueira<natanounatan@gmail.com> #{time.now}
-    
+
     #{message}
   COMMIT
+
+  puts content
 
   hash = hash_object(content, 'commit')
   puts hash
