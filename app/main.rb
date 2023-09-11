@@ -94,6 +94,22 @@ when 'ls-tree'
   end
 when 'write-tree'
   puts write_tree('.')
+when 'commit-tree'
+  tree_hash = ARGV[1]
+  commit_hash = ARGV[3]
+  message = ARGV[5]
+
+  content = <<~COMMIT.strip
+    tree #{tree_hash}
+    parent #{commit_hash}
+    author Natan Siqueira<natanounatan@gmail.com> #{time.now}
+    commiter Natan Siqueira<natanounatan@gmail.com> #{time.now}
+    
+    #{message}
+  COMMIT
+
+  hash = hash_object(content, 'commit')
+  puts hash
 else
   raise "Unknown command #{command}"
 end
